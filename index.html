@@ -1,0 +1,103 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="ja">
+
+  <head>
+    <script type="text/x-mathjax-config">
+
+       MathJax.Hub.Config({TeX:{equationNumbers:{autoNumber:"AMS"}}});
+
+    </script>
+
+    <script type="text/javascript" async 
+
+        src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML">
+
+    </script>
+
+  </head>
+
+  <body>
+    <p>Popovの超安定論</p>
+
+    <img src="PopovBlock.bmp" width=400px>
+
+    <p>Popovの超安定論は図に示す線形定常ブロックと非線形時変ブロックで構成されるフィードバックシステムが次の二つの条件を満足するとき、そのフィードバックシステムは安定(超安定)であることを示しています。</p>
+
+    <p>・線形ブロックの伝達関数が強正実条件を満足する。</p>
+    <p>・Popovの積分不等式が成立する。</p>
+
+    <p>強正実条件:</p>
+    <p>線形ブロックの伝達関数\(G(s)\)が次の条件を満足することです。</p>
+      <p>(1)\(G(s)\)が実のsに対して実である。</p>
+      <p>(2)\(G(s)\)が漸近的に安定、すなわちs面の右半平面\(Re[s]\ge0\)に極がない。</p>
+      <p>(3)\(-\infty <\omega<  \infty\)のすべての\(\omega\)に対して\(Re[G(j\omega)]\ge0\)。</p>
+
+    <p>Popovの積分不等式:</p>
+
+    <p>線形ブロックの出力を\(v\)、非線形ブロックの出力を\(w\)として、Popovの積分不等式は次式で与えられます。</p>
+
+    \begin{align}
+    \int_{0}^{t}vw dt \ge -\gamma_0^2
+    \end{align}
+
+    <p>ここに、\(\gamma_0\)は定数です。</p>
+
+    <p>それでは、具体的なフィードバックシステムについて考察してみましょう。</p>
+    \begin{align}
+    \ddot x + a\dot x + b x = u
+    \end{align}
+
+    <p>これを少し変形して、</p>
+    \begin{align}
+    \ddot x = - a\dot x - b x + u,~~~\dot x = \dot x.
+    \end{align}
+
+    <p>さらに行列とベクトルの形式で記述します。</p>
+    \begin{align}
+     \begin{bmatrix}
+     \dot x \\
+     \ddot x 
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+    0 & 1\\
+    -b & -a
+    \end{bmatrix}
+    \begin{bmatrix}
+     x \\
+    \dot x
+    \end{bmatrix}
+    +
+    \begin{bmatrix}
+     0 \\
+     1
+    \end{bmatrix}u
+    \end{align}
+
+    <p>行列とベクトルを次のように太字で表します。</p>
+
+     \begin{align}
+     \bf x =
+     \begin{bmatrix}
+      x \\
+     \dot x 
+    \end{bmatrix},~~~~~
+    \bf A =
+    \begin{bmatrix}
+    0 & 1\\
+    -b & -a
+    \end{bmatrix},~~~~~
+    \bf B =
+    \begin{bmatrix}
+    0 \\
+    1
+    \end{bmatrix}.
+    \end{align}
+
+    \begin{align}
+    \dot{\bf x} = \bf{A} \bf{x} + \bf{B}u
+    \end{align}
+</body>
+
+</html>
