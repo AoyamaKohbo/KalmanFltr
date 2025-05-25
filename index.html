@@ -30,14 +30,14 @@
       \(\mathbf{w}\)は入力ノイズベクトルです。
     </p>
     
-    <p>式\eqref{eq:RtnEqn}のカルマンフィルターは次式となります。</p>  
+    <p>式\eqref{eq:RtnEqn}のカルマンフィルター次式となります。</p>  
     \begin{align}
       \hat{\mathbf{x}}(n)={\mathbf{p}}(n)+\mathbf{K}\mathbf{e}(n)\label{eq:KalmanFilt}
       \mathbf{e}(n)&=~\mathbf{y}(n)-\mathbf{C}\mathbf{p}(n)\\
       {\mathbf{p}}(n+1)&=~\mathbf{A}\hat{\mathbf{x}}(n)+\mathbf{B}\mathbf{u}(n)\\
     \end{align}
 
-    <p>\(\mathbf{K}\)はカルマンゲイン行列次式で与えられます。</p>
+    <p>\(\mathbf{K}\)はカルマンゲイン行列であり、次式で与えられます。</p>
     \begin{align}
       \mathbf{K}&=~\mathbf{P}\mathbf{C}^T\mathbf{V}^{-1}\\
       \mathbf{P}&=~(\mathbf{I}-\mathbf{K}\mathbf{C})(\mathbf{A}\mathbf{P}\mathbf{A}^T+\mathbf{W})\\
@@ -45,6 +45,7 @@
       \mathbf{W}&=~E[\mathbf{w}(n)\mathbf{w}(n)^T]
     \end{align} 
 
+    <h3>カルマンフィルター</h3>
     \begin{align}
       \tilde{\mathbf{x}}(n)=\mathbf{x}(n)-\hat{\mathbf{x}}(n)
     \end{align}
