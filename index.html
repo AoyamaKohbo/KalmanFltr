@@ -18,7 +18,7 @@
   </head>
 
   <body>
-    <h3>カルマンフィルタ(Kalman Filter)</h3>
+    <h3>カルマンフィルター(Kalman Filter)</h3>
 
     <p>動的システムを次式の離散状態方程式で与えます。</p>
     \begin{align}
@@ -29,8 +29,10 @@
     \begin{align}
       \hat{\mathbf{x}}(n)={\mathbf{p}}(n)+\mathbf{K}\mathbf{e}(n)\label{eq:KalmanFilt}
     \end{align}
-    <p>ここに、\(\mathbox{u}\)は入力ベクトル、\(\mathbox{x}\)は状態ベクトル、\(\mathbox{y}\)出力ベクトル、\(\mathbox{A}\)は遷移行列、\(\mathbox{B}\)、\(\mathbox{v}\)出力ノイズベクトル、\(\mathbox{w}\)は入力ノイズベクトルです。</p>
-    
+    <p>ここに、\(\mathbox{u}\)は入力ベクトル、\(\mathbox{x}\)は状態ベクトル、\(\mathbox{y}\)出力ベクトル、
+      \(\mathbox{A}\)は遷移行列、\(\mathbox{B}\)、\(\mathbox{C}\)は行列、\(\mathbox{v}\)出力ノイズベクトル、\(\mathbox{w}\)は入力ノイズベクトルです。</p>
+
+    式\label{eq:RtnEqn}のカルマンフィルターを次式で与える。
     \begin{align}
       \mathbf{e}(n)&=~\mathbf{y}(n)-\mathbf{C}\mathbf{p}(n)\\
       {\mathbf{p}}(n+1)&=~\mathbf{A}\hat{\mathbf{x}}(n)+\mathbf{B}\mathbf{u}(n)\\
