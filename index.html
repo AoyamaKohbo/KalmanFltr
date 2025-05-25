@@ -36,8 +36,12 @@
 
     <p>式\label{eq:RtnEqn}のカルマンフィルターは次式となります。</p>
     \begin{align}
-      \mathbf{e}(n)&=~\mathbf{y}(n)-\mathbf{C}\mathbf{p}(n)\\
+      \mathbf{e}(n)&=~\mathbf{y}(n)-\mathbf{K}\mathbf{p}(n)\\
       {\mathbf{p}}(n+1)&=~\mathbf{A}\hat{\mathbf{x}}(n)+\mathbf{B}\mathbf{u}(n)\\
+    \end{align}
+
+    <p>\(\mathbf{K}\)はカルマンゲイン行列は次式で与えられます。</p>
+    \begin{align}
       \mathbf{K}&=~\mathbf{P}\mathbf{C}^T\mathbf{V}^{-1}\\
       \mathbf{P}&=~(\mathbf{I}-\mathbf{K}\mathbf{C})(\mathbf{A}\mathbf{P}\mathbf{A}^T+\mathbf{W})\\
       \mathbf{V}&=~E[\mathbf{v}(n)\mathbf{v}(n)^T]\\
