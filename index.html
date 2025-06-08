@@ -29,27 +29,40 @@
       \end{array}\label{eq:RtnEqn}
       \right.
     \end{align}
-    <p>ここに、\(\mathbf{u}\)は入力ベクトル、\(\mathbf{x}\)は状態ベクトル、\(\mathbf{y}\)出力(計測値)ベクトル、
-      \(\mathbf{A}\)は遷移行列、\(\mathbf{B}\)は入力係数行列、\(\mathbf{C}\)は出力係数行列、\(\mathbf{v}\)出力ノイズベクトル、
-      \(\mathbf{w}\)は入力ノイズベクトルです。\(\mathbf{A}\)、\(\mathbf{B}\)、\(\mathbf{C}\)は定数行列です。
+    <p>ここに、\(\mathbf{u}\)は入力、\(\mathbf{x}\)は状態量、\(\mathbf{y}\)出力(計測値)、
+      \(\mathbf{A}\)は遷移行列、\(\mathbf{B}\)は入力係数、\(\mathbf{C}\)は出力係数、\(\mathbf{v}\)は出力ノイズ、
+      \(\mathbf{w}\)は入力ノイズです。\(\mathbf{A}\)、\(\mathbf{B}\)、\(\mathbf{C}\)は定数行列です。
     </p>
 
     <p>式\eqref{eq:RtnEqn}をブロック線図で表現すると下図になります。</p>     
     <img src="Block.jpg" width=600px>    
     
-    <p>式\eqref{eq:RtnEqn}のオブザーバー(カルマンフィルター)は次式となります。</p>
+    <p>動的システムの状態量\(\mathbf{x}(n)\)は高次微分を含むため直接観測することができません。
+      そこで観測器により推定する必要があります。
+      式\eqref{eq:RtnEqn}の状態観測器(オブザーバー)は次式となります。</p>
     \begin{align}
       \left\{
       \begin{array}{@{\,}rl}
       {\mathbf{q}}(n+1)&=~\mathbf{A}\hat{\mathbf{x}}(n)+\mathbf{B}\mathbf{u}(n)\\
-      \hat{\mathbf{x}}(n)&=~{\mathbf{q}}(n)+\mathbf{K}\mathbf{e}(n)\\      
-      \mathbf{e}(n)&=~\mathbf{y}(n)-\mathbf{C}\mathbf{q}(n)
+        \mathbf{e}(n)&=~\mathbf{y}(n)-\mathbf{C}\mathbf{q}(n)\\
+        \hat{\mathbf{x}}(n)&=~{\mathbf{q}}(n)+\mathbf{K}\mathbf{e}(n)    
       \end{array}\label{eq:KalmanFilt}
       \right.    
     \end{align}
-    <p>\(\hat{\mathbf{x}}\)は状態量\(\mathbf{x}\)の推定ベクトル(フィルター出力)、
-      \(\mathbf{q}\)はオブザーバーの状態ベクトルであり、状態量\(\mathbf{x}\)の未来予測値となっています。
-    \(\mathbf{K}\)は状態ベクトルの推定誤差\((\mathbf{x}-\hat{\mathbf{x}})\)を最小化する行列(カルマンゲイン)であり、次式で与えられます。</p>
+    <p>\(\hat{\mathbf{x}}\)は状態量\(\mathbf{x}\)の推定量、
+      \(\mathbf{q}\)は状態観測器の状態量であり、状態量\(\mathbf{x}\)の未来予測値となっています。
+    \(\mathbf{e}(n)\)は計測値\(\mathbf{y}(n)\)と状態観測器の出力\(\mathbf{C}\mathbf{q}(n)\)の偏差です。
+    偏差量\(\mathbf{e}(n)\)は行列\(\mathbf{K}\)を補正係数として状態観推定量\(\hat{\mathbf{x}}(n)\)を補正します。
+    </p>
+
+    <p>状態観測器\eqref{eq:KalmanFilt}をブロック線図で表現すると下図になります。
+      このブロック線図では制御入力\(\mathbf{u}(n)\)と計測で得られた\(\mathbf{y}(n)\)を入力とし、
+      状態推定値\(\hat{\mathbf{x}}(n)\)を出力としていることが分かります。</p>
+
+    <img src="KalmanBlock.jpg" width=600px>
+    
+    <p>カルマンフィルターは状態推定誤差\((\mathbf{x}-\hat{\mathbf{x}})\)を最小化する状態観測器であり、
+      状態推定誤差を最小化するために行列\(\mathbf{K}\)(カルマンゲイン)を次式で与えます。</p>
     \begin{align}
       \mathbf{K}&=~\mathbf{P}\mathbf{C}^T\mathbf{V}^{-1}\\
       \mathbf{P}&=~(\mathbf{I}-\mathbf{K}\mathbf{C})(\mathbf{A}\mathbf{P}\mathbf{A}^T+\mathbf{W})\\
@@ -57,31 +70,25 @@
       \mathbf{W}&=~E[\mathbf{w}(n)^T\mathbf{w}(n)] \label{eq:Mat_W}
     \end{align}
     
-    <p>\(E[*]\)は算術平均であり、\(E[*]\)の中が\(\mathbf{x}(n)\)の場合、次式で与えられます。</p>
+    <p>\(\mathbf{V}\)、\(\mathbf{W}\)はそれぞれ\(\mathbf{v}(n)\)、\(\mathbf{w}(n)\)の共分散行列です。\(E[*]\)は算術平均であり、\(E[*]\)の中が\(\mathbf{x}(n)\)の場合、次式で与えられます。</p>
     \begin{align*}
       E[x(n)] = \frac{1}{n}\sum_{k = 0}^{n}x(k)
     \end{align*}
 
-    <p>カルマンフィルター\eqref{eq:KalmanFilt}をブロック線図で表現すると下図になります。
-      このブロック線図では制御入力\(\mathbf{u}(n)\)と計測で得られた\(\mathbf{y}(n)\)をフィルター入力とし、
-      状態推定値\(\hat{\mathbf{x}}(n)\)を出力としていることが分かります。すなわち、カルフィルターは制御対象への入力と、
-      制御対象の計測値(出力)から制御対象の状態量を推定するオブザーバー(状態観測器)です。
-    </p>     
-    <img src="KalmanBlock.jpg" width=600px>        
-
     <h3>定常カルマンフィルターの導出</h3>
-    <p>ここでは、行列\(\mathbf{V}\)、\(\mathbf{W}\)が定数行列となる定常状態について導出します。まず、状態ベクトル\(\hat{x}\)の状態推定誤差\(\tilde{x}\)を次式で与えます。</p>
+    <p>ここでは、行列\(\mathbf{V}\)、\(\mathbf{W}\)が定数行列となる定常状態について導出します。
+      まず、状態量\(\hat{x}\)の状態推定誤差\(\tilde{x}\)を次式で与えます。</p>
     \begin{align}
       \tilde{\mathbf{x}}(n)=\mathbf{x}(n)-\hat{\mathbf{x}}(n)
     \end{align}
 
     <p>状態推定誤差\(\tilde{\mathbf{x}}(n)\)の評価量\(J\)を次式で与えます。</p>
     \begin{align}
-      J = E[\tilde{\mathbf{x}}(n)^T(n)\tilde{\mathbf{x}}(n)] = \frac{1}{n}\sum_{k = 0}^{n}\tilde{\mathbf{x}}(k)^T\tilde{\mathbf{x}}(k) \label{eq:Evalation}
+      J = E[\tilde{\mathbf{x}}(n)^T\tilde{\mathbf{x}}(n)] = \frac{1}{n}\sum_{k = 0}^{n}\tilde{\mathbf{x}}(k)^T\tilde{\mathbf{x}}(k) \label{eq:Evalation}
     \end{align}
-    <p>評価量\(J\)は状態推定誤差の二乗平均(分散)となっています。</p>
+    <p>評価量\(J\)は状態推定誤差\(\tilde{\mathbf{x}}(n)\)の二乗平均(分散)となっています。</p>
 
-    <p>式\eqref{eq:RtnEqn}の状態量\(\mathbf{x}(n)\)とカルマンフィルター\eqref{eq:KalmanFilt}の状態量\(\mathbf{p}(n)\)の誤差を\(\mathbf{z}(n) = \mathbf{x}(n) - \mathbf{q}(n)\)と定義すると、
+    <p>式\eqref{eq:RtnEqn}の状態量\(\mathbf{x}(n)\)と状態観測器\eqref{eq:KalmanFilt}の状態量\(\mathbf{p}(n)\)の誤差を\(\mathbf{z}(n) = \mathbf{x}(n) - \mathbf{q}(n)\)と定義すると、
       次式が得られます。</p>
     \begin{align}
       \mathbf{z}(n+1)=\mathbf{x}(n+1)-\mathbf{q}(n+1)=\mathbf{A}\tilde{\mathbf{x}}(n)+\mathbf{w}(n) \label{eq:StateEqZ}
