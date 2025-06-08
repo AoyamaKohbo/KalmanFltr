@@ -77,16 +77,15 @@
 
     <h3>定常カルマンフィルターの導出</h3>
     <p>ここでは、行列\(\mathbf{V}\)、\(\mathbf{W}\)が定数行列となる定常状態について導出します。
-      まず、状態量\(\hat{x}\)の状態推定誤差\(\tilde{x}\)を次式で与えます。</p>
+      まず、状態量\(\hat{x}\)の状態推定誤差\(\tilde{\mathbf{x}}(n)\)を次式で与えます。</p>
     \begin{align}
       \tilde{\mathbf{x}}(n)=\mathbf{x}(n)-\hat{\mathbf{x}}(n)
     \end{align}
 
-    <p>状態推定誤差\(\tilde{\mathbf{x}}(n)\)の評価量\(J\)を次式で与えます。</p>
+    <p>評価量\(J\)を状態推定誤差\(\tilde{\mathbf{x}}(n)\)の二次評価式(分散)として与えます。</p>
     \begin{align}
       J = E[\tilde{\mathbf{x}}(n)^T\tilde{\mathbf{x}}(n)] = \frac{1}{n}\sum_{k = 0}^{n}\tilde{\mathbf{x}}(k)^T\tilde{\mathbf{x}}(k) \label{eq:Evalation}
     \end{align}
-    <p>評価量\(J\)は状態推定誤差\(\tilde{\mathbf{x}}(n)\)の二乗平均(分散)となっています。</p>
 
     <p>式\eqref{eq:RtnEqn}の状態量\(\mathbf{x}(n)\)と状態観測器\eqref{eq:KalmanFilt}の状態量\(\mathbf{p}(n)\)の誤差を\(\mathbf{z}(n) = \mathbf{x}(n) - \mathbf{q}(n)\)と定義すると、
       次式が得られます。</p>
@@ -94,7 +93,7 @@
       \mathbf{z}(n+1)=\mathbf{x}(n+1)-\mathbf{q}(n+1)=\mathbf{A}\tilde{\mathbf{x}}(n)+\mathbf{w}(n) \label{eq:StateEqZ}
     \end{align}
 
-    <p>状態推定ベクトル\(\hat{\mathbf{x}}\)の誤差ベクトルを次式で与えます。</p>
+    <p>状態推定ベクトル\(\hat{\mathbf{x}}(n)\)の誤差ベクトルを次式で与えます。</p>
     \begin{align}
       \tilde{\mathbf{x}}(n)&=~\mathbf{x}(n)-\hat{\mathbf{x}}(n)\nonumber\\
       &=~\mathbf{x}(n)-\mathbf{q}(n)-\mathbf{K}\{\mathbf{C}\hat{\mathbf{x}}(n)+\hat{\mathbf{v}}(n)-\hat{\mathbf{C}}\mathbf{q}(n)\}\nonumber\\
@@ -108,7 +107,8 @@
     +E[\mathbf{v}(n)^T\mathbf{K}^T\mathbf{K}\mathbf{v}(n)]
     \end{align}
 
-    <p>状態推定誤差\(\tilde{\mathbf{x}}\)を最小化するために\(\mathbf{K}\)に対する評価量\(J\)の極値条件(\(\partial J/\partial\mathbf{K}=\mathbf{O}\))は次式となります。</p>
+    <p><a href="https://aoyamakohbo.github.io/LstSqtMth2/">最小二乗法</a>と同様に状態推定誤差\(\tilde{\mathbf{x}}\)を
+      最小化するための\(\mathbf{K}\)に対する評価量\(J\)の極値条件(\(\partial J/\partial\mathbf{K}=\mathbf{O}\))は次式となります。</p>
     \begin{align}
       \frac{\partial J}{\partial\mathbf{K}}=-2E[{\mathbf{z}(n)^T\mathbf{z}(n)]\mathbf{C}}-2\mathbf{K}\mathbf{C}E[{\mathbf{z}(n)^T\mathbf{z}(n)}]\mathbf{C}+2\mathbf{K}E[\mathbf{v}(n)^T\mathbf{v}(n)]=\mathbf{O} \label{eq:Cond1}
     \end{align}
