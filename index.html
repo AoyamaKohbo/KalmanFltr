@@ -24,14 +24,13 @@
     \begin{align}
       \left.
       \begin{array}{@{\,}rl}
-      \mathbf{x}(n+1)&=~\mathbf{A}\mathbf{x}(n)+\mathbf{B}\mathbf{u}(n)+\mathbf{w}(n)\\
+      \mathbf{x}(n+1)&=~\mathbf{P}\mathbf{x}(n)+\mathbf{Q}\mathbf{u}(n)+\mathbf{w}(n)\\
       \mathbf{y}(n)&=~\mathbf{C}\mathbf{x}(n)+\mathbf{v}(n)
       \end{array}\label{eq:RtnEqn}
       \right\}
     \end{align}
     <p>ここに、\(\mathbf{u}\)は入力、\(\mathbf{x}\)は状態量、\(\mathbf{y}\)出力(計測値)、
-      \(\mathbf{A}\)は遷移行列、\(\mathbf{B}\)は入力係数、\(\mathbf{C}\)は出力係数、\(\mathbf{v}\)は出力ノイズ、
-      \(\mathbf{w}\)は入力ノイズです。\(\mathbf{A}\)、\(\mathbf{B}\)、\(\mathbf{C}\)は定数行列です。
+      \(\mathbf{P}\)は遷移行列、\(\mathbf{Q}\)は入力係数、\(\mathbf{C}\)は出力係数、\(\mathbf{v}\)は出力ノイズです。
     </p>
 
     <p>式\eqref{eq:RtnEqn}をブロック線図で表現すると下図になります。</p>     
