@@ -44,14 +44,14 @@
       \begin{array}{@{\,}rl}
         {\mathbf{q}}(n+1)&=~\mathbf{P}\hat{\mathbf{x}}(n)+\mathbf{Q}\mathbf{u}(n)\\
         \mathbf{e}(n)&=~\mathbf{y}(n)-\mathbf{C}\mathbf{q}(n)\\
-        \hat{\mathbf{x}}(n)&=~{\mathbf{q}}(n)+\mathbf{K}(n)\mathbf{e}(n)    
+        \hat{\mathbf{x}}(n)&=~{\mathbf{q}}(n)+\mathbf{K}\mathbf{e}(n)    
       \end{array}\label{eq:KalmanFilt}
       \right\}  
     \end{align}
     <p>\(\hat{\mathbf{x}}\)は状態量\(\mathbf{x}\)の推定量、
       \(\mathbf{q}\)は状態観測器の状態量であり、状態量\(\mathbf{x}\)の未来予測値となっています。
     \(\mathbf{e}(n)\)は計測値\(\mathbf{y}(n)\)と状態観測器の出力\(\mathbf{C}\mathbf{q}(n)\)の偏差です。
-    偏差量\(\mathbf{e}(n)\)は行列\(\mathbf{K}(n)\)を補正係数として状態観推定量\(\hat{\mathbf{x}}(n)\)を補正します。
+    偏差量\(\mathbf{e}(n)\)は行列\(\mathbf{K}\)を補正係数として状態観推定量\(\hat{\mathbf{x}}(n)\)を補正します。
     </p>
 
     <p>状態観測器\eqref{eq:KalmanFilt}をブロック線図で表現すると下図になります。
@@ -61,12 +61,12 @@
     <img src="KalmanBlock.jpg" width=800px>
     
     <p>カルマンフィルターは状態推定誤差\((\mathbf{x}-\hat{\mathbf{x}})\)を最小化する状態観測器であり、
-      状態推定誤差を最小化するために行列\(\mathbf{K}(n)\)(カルマンゲイン)を次式で与えます。</p>
+      状態推定誤差を最小化するために行列\(\mathbf{K}\)(カルマンゲイン)を次式で与えます。</p>
     \begin{align}
       \left.
       \begin{array}{@{\,}rl}
-      \mathbf{K}(n)&=~\mathbf{X}(n)\mathbf{C}^T\mathbf{V}^{-1}\\
-      \mathbf{X}(n)&=~(\mathbf{I}-\mathbf{K}(n)\mathbf{C})(\mathbf{P}\mathbf{X}(n-1)\mathbf{P}^T+\mathbf{W})\\
+      \mathbf{K}&=~\mathbf{X}(n)\mathbf{C}^T\mathbf{V}^{-1}\\
+      \mathbf{X}(n)&=~(\mathbf{I}-\mathbf{K}\mathbf{C})(\mathbf{P}\mathbf{X}(n-1)\mathbf{P}^T+\mathbf{W})\\
       \mathbf{V}&=~E[\mathbf{v}(n)^T\mathbf{v}(n)]\\
       \mathbf{W}&=~E[\mathbf{w}(n)^T\mathbf{w}(n)]
       \end{array}\label{eq:Mat_W}    
@@ -99,21 +99,21 @@
     <p>状態推定ベクトル\(\hat{\mathbf{x}}(n)\)の誤差ベクトルを次式で与えます。</p>
     \begin{align}
       \tilde{\mathbf{x}}(n)&=~\mathbf{x}(n)-\hat{\mathbf{x}}(n)\nonumber\\
-      &=~\mathbf{x}(n)-\mathbf{q}(n)-\mathbf{K}(n)\{\mathbf{C}\hat{\mathbf{x}}(n)+\hat{\mathbf{v}}(n)-\hat{\mathbf{C}}\mathbf{q}(n)\}\nonumber\\
-      &=~(\mathbf{I}-\mathbf{K}(n)\mathbf{C})\mathbf{z}(n)-\mathbf{K}(n)\mathbf{v}(n)\label{eq:ErrorOfEst}
+      &=~\mathbf{x}(n)-\mathbf{q}(n)-\mathbf{K}\{\mathbf{C}\hat{\mathbf{x}}(n)+\hat{\mathbf{v}}(n)-\hat{\mathbf{C}}\mathbf{q}(n)\}\nonumber\\
+      &=~(\mathbf{I}-\mathbf{K}\mathbf{C})\mathbf{z}(n)-\mathbf{K}\mathbf{v}(n)\label{eq:ErrorOfEst}
     \end{align}
 
     <p>式\eqref{eq:ErrorOfEst}を式\eqref{eq:Evalation}に代入し、\(E[\tilde{\mathbf{z}}(n)\tilde{\mathbf{v}}^T(n)] = 0\)を考慮すると、評価量\(J\)は次式となります。</p>
       \begin{align}
-      J(n)&=~E[{\mathbf{z}(n)^T(\mathbf{I}-\mathbf{K}(n)\mathbf{C})^T(\mathbf{I}-\mathbf{K}(n)\mathbf{C})\mathbf{z}(n)}]+E[\mathbf{v}(n)^T\mathbf{K}(n)^T\mathbf{K}(n)\mathbf{v}(n)]\nonumber\\
-      &=~E[\mathbf{z}(n)^T\mathbf{z}(n)]-E[{\mathbf{z}(n)^T\mathbf{K}(n)\mathbf{C}\mathbf{z}(n)}]-E[{\mathbf{z}(n)^T\mathbf{C}^T\mathbf{K}(n)^T\mathbf{z}(n)}]+E[{\mathbf{z}(n)^T\mathbf{C}^T\mathbf{K}(n)^T\mathbf{K}(n)\mathbf{C}\mathbf{z}(n)}]
-    +E[\mathbf{v}(n)^T\mathbf{K}(n)^T\mathbf{K}(n)\mathbf{v}(n)]
+      J(n)&=~E[{\mathbf{z}(n)^T(\mathbf{I}-\mathbf{K}\mathbf{C})^T(\mathbf{I}-\mathbf{K}\mathbf{C})\mathbf{z}(n)}]+E[\mathbf{v}(n)^T\mathbf{K}^T\mathbf{K}\mathbf{v}(n)]\nonumber\\
+      &=~E[\mathbf{z}(n)^T\mathbf{z}(n)]-E[{\mathbf{z}(n)^T\mathbf{K}\mathbf{C}\mathbf{z}(n)}]-E[{\mathbf{z}(n)^T\mathbf{C}^T\mathbf{K}^T\mathbf{z}(n)}]+E[{\mathbf{z}(n)^T\mathbf{C}^T\mathbf{K}^T\mathbf{K}\mathbf{C}\mathbf{z}(n)}]
+    +E[\mathbf{v}(n)^T\mathbf{K}^T\mathbf{K}\mathbf{v}(n)]
     \end{align}
 
     <p><a href="https://aoyamakohbo.github.io/LstSqtMth2/">最小二乗法</a>と同様に状態推定誤差\(\tilde{\mathbf{x}}\)を
-      最小化するための\(\mathbf{K}(n)\)に対する評価量\(J\)の極値条件(\(\partial J/\partial\mathbf{K}(n)=\mathbf{O}\))は次式となります。</p>
+      最小化するための\(\mathbf{K}\)に対する評価量\(J\)の極値条件(\(\partial J/\partial\mathbf{K}=\mathbf{O}\))は次式となります。</p>
     \begin{align}
-      \frac{\partial J(n)}{\partial\mathbf{K}(n)}=-2E[{\mathbf{z}(n)^T\mathbf{z}(n)]\mathbf{C}}-2\mathbf{K}(n)\mathbf{C}E[{\mathbf{z}(n)^T\mathbf{z}(n)}]\mathbf{C}+2\mathbf{K}(n)E[\mathbf{v}(n)^T\mathbf{v}(n)]=\mathbf{O} \label{eq:Cond1}
+      \frac{\partial J(n)}{\partial\mathbf{K}}=-2E[{\mathbf{z}(n)^T\mathbf{z}(n)]\mathbf{C}}-2\mathbf{K}\mathbf{C}E[{\mathbf{z}(n)^T\mathbf{z}(n)}]\mathbf{C}+2\mathbf{K}E[\mathbf{v}(n)^T\mathbf{v}(n)]=\mathbf{O} \label{eq:Cond1}
     \end{align}
 
     <p>ここで、\(\tilde{\mathbf{x}}(n)\)と\(\mathbf{z}(n)\)の共分散行列を次式で与えます。</p>
@@ -124,12 +124,12 @@
 
     <p>式\eqref{eq:MatP}、\eqref{eq:Mat_M}を用いると、式\eqref{eq:Cond1}は次式になります。</p>
     \begin{align}
-      \frac{\partial J(n)}{\partial\mathbf{K}(n)}=-2\mathbf{Z}(n)\mathbf{C}^T-2\mathbf{K}(n)\mathbf{C}\mathbf{Z}(n)\mathbf{C}^T+2\mathbf{K}(n)\mathbf{V}=\mathbf{O}
+      \frac{\partial J(n)}{\partial\mathbf{K}}=-2\mathbf{Z}(n)\mathbf{C}^T-2\mathbf{K}\mathbf{C}\mathbf{Z}(n)\mathbf{C}^T+2\mathbf{K}\mathbf{V}=\mathbf{O}
     \end{align}
 
-    <p>したがって、\(\mathbf{K}(n)\)に対する評価量\(J\)の極値条件(\(\partial J/\partial\mathbf{K}(n)=\mathbf{O}\))は次式となります。</p>
+    <p>したがって、\(\mathbf{K}\)に対する評価量\(J\)の極値条件(\(\partial J/\partial\mathbf{K}=\mathbf{O}\))は次式となります。</p>
     \begin{align}
-      (\mathbf{I} - \mathbf{K}(n)\mathbf{C})\mathbf{Z}(n)\mathbf{C}^T = \mathbf{K}(n)\mathbf{V} \label{eq:KalmanGain1}
+      (\mathbf{I} - \mathbf{K}\mathbf{C})\mathbf{Z}(n)\mathbf{C}^T = \mathbf{K}\mathbf{V} \label{eq:KalmanGain1}
     \end{align}
 
     <p>十分大きな\(n\)に対して相関行列\(E[\tilde{\mathbf{x}}(n)\tilde{\mathbf{w}}^T(n)]=0\)を考慮すると式\eqref{eq:StateEqZ}から次式が得られます。</p>
@@ -147,42 +147,42 @@
     
     <p>式\eqref{eq:ErrorOfEst}を式\eqref{eq:MatP}に代入すると次式が得られます。</p>
     \begin{align}
-      \mathbf{X}(n)=&E[\{(\mathbf{I}-\mathbf{K}(n)\mathbf{C})\mathbf{z}(n)-\mathbf{K}(n)\mathbf{v}(n)\}\{(\mathbf{I}-\mathbf{K}(n)\mathbf{C})\mathbf{z}(n)-\mathbf{K}(n)\mathbf{v}(n)\}^T] \nonumber\\
-      =&E[\{(\mathbf{I}-\mathbf{K}(n)\mathbf{C})\mathbf{z}(n)-\mathbf{K}(n)\mathbf{v}(n)\}\{\mathbf{z}(n)^T(\mathbf{I}-\mathbf{K}(n)\mathbf{C})^T-\mathbf{v}(n)^T\mathbf{K}(n)^T\}] \nonumber\\
-      =&E[\{(\mathbf{I}-\mathbf{K}(n)\mathbf{C})\mathbf{z}(n)\mathbf{z}(n)^T(\mathbf{I}-\mathbf{K}(n)\mathbf{C})^T-(\mathbf{I}-\mathbf{K}(n)\mathbf{C})\mathbf{z}(n)\mathbf{v}(n)^T\mathbf{K}(n)^T-\mathbf{K}(n)\mathbf{v}(n)\mathbf{z}(n)^T(\mathbf{I}-\mathbf{K}(n)\mathbf{C})^T+\mathbf{K}(n)\mathbf{v}(n)\mathbf{v}(n)^T\mathbf{K}(n)^T\}] \nonumber\\
-      =&\{(\mathbf{I}-\mathbf{K}(n)\mathbf{C})E[\mathbf{z}(n)\mathbf{z}(n)^T](\mathbf{I}-\mathbf{K}(n)\mathbf{C})^T-(\mathbf{I}-\mathbf{K}(n)\mathbf{C})E[\mathbf{z}(n)\mathbf{v}(n)^T]\mathbf{K}(n)^T-\mathbf{K}(n)E[\mathbf{v}(n)\mathbf{z}(n)^T](\mathbf{I}-\mathbf{K}(n)\mathbf{C})^T\nonumber\\
-      &+\mathbf{K}(n)E[\mathbf{v}(n)\mathbf{v}(n)^T]\mathbf{K}(n)^T\}] \label{eq:CovarMatOfError2}
+      \mathbf{X}(n)=&E[\{(\mathbf{I}-\mathbf{K}\mathbf{C})\mathbf{z}(n)-\mathbf{K}\mathbf{v}(n)\}\{(\mathbf{I}-\mathbf{K}\mathbf{C})\mathbf{z}(n)-\mathbf{K}\mathbf{v}(n)\}^T] \nonumber\\
+      =&E[\{(\mathbf{I}-\mathbf{K}\mathbf{C})\mathbf{z}(n)-\mathbf{K}\mathbf{v}(n)\}\{\mathbf{z}(n)^T(\mathbf{I}-\mathbf{K}\mathbf{C})^T-\mathbf{v}(n)^T\mathbf{K}^T\}] \nonumber\\
+      =&E[\{(\mathbf{I}-\mathbf{K}\mathbf{C})\mathbf{z}(n)\mathbf{z}(n)^T(\mathbf{I}-\mathbf{K}\mathbf{C})^T-(\mathbf{I}-\mathbf{K}\mathbf{C})\mathbf{z}(n)\mathbf{v}(n)^T\mathbf{K}^T-\mathbf{K}\mathbf{v}(n)\mathbf{z}(n)^T(\mathbf{I}-\mathbf{K}\mathbf{C})^T+\mathbf{K}\mathbf{v}(n)\mathbf{v}(n)^T\mathbf{K}^T\}] \nonumber\\
+      =&\{(\mathbf{I}-\mathbf{K}\mathbf{C})E[\mathbf{z}(n)\mathbf{z}(n)^T](\mathbf{I}-\mathbf{K}\mathbf{C})^T-(\mathbf{I}-\mathbf{K}\mathbf{C})E[\mathbf{z}(n)\mathbf{v}(n)^T]\mathbf{K}^T-\mathbf{K}E[\mathbf{v}(n)\mathbf{z}(n)^T](\mathbf{I}-\mathbf{K}\mathbf{C})^T\nonumber\\
+      &+\mathbf{K}E[\mathbf{v}(n)\mathbf{v}(n)^T]\mathbf{K}^T\}] \label{eq:CovarMatOfError2}
       \end{align}
 
     <p>十分大きな\(n\)に対して\(E[\mathbf{z}(n)\mathbf{v}^T(n)]=\mathbf{O}\)を考慮すると式\eqref{eq:CovarMatOfError2}は次式になります。</p>
     \begin{align}
-      \mathbf{X}(n)=(\mathbf{I}-\mathbf{K}(n)\mathbf{C})\mathbf{Z}(n)(\mathbf{I}-\mathbf{K}(n)\mathbf{C})^T+\mathbf{K}(n)\mathbf{V}\mathbf{K}(n)^T \label{eq:MatP1}
+      \mathbf{X}(n)=(\mathbf{I}-\mathbf{K}\mathbf{C})\mathbf{Z}(n)(\mathbf{I}-\mathbf{K}\mathbf{C})^T+\mathbf{K}\mathbf{V}\mathbf{K}^T \label{eq:MatP1}
     \end{align}
 
-    <p>式\eqref{eq:KalmanGain1}の両辺に右側から\(\mathbf{K}(n)^T\)を乗ずることにより次式が得られます。</p>
+    <p>式\eqref{eq:KalmanGain1}の両辺に右側から\(\mathbf{K}^T\)を乗ずることにより次式が得られます。</p>
     \begin{align}
-      \mathbf{K}(n)\mathbf{V}\mathbf{K}(n)^T=(\mathbf{I}-\mathbf{K}(n)\mathbf{C})\mathbf{Z}(n)\mathbf{C}^T\mathbf{K}(n)^T \label{eq:KVK}
+      \mathbf{K}\mathbf{V}\mathbf{K}^T=(\mathbf{I}-\mathbf{K}\mathbf{C})\mathbf{Z}(n)\mathbf{C}^T\mathbf{K}^T \label{eq:KVK}
     \end{align}
 
     <p>式\eqref{eq:MatP1}の\(\mathbf{KVK^T}\)を\eqref{eq:KVK}の右辺で置き換えると\(\mathbf{X}(n)\)は次式となります。</p>
     \begin{align}
-      \mathbf{X}(n)=(\mathbf{I}-\mathbf{K}(n)\mathbf{C})\mathbf{Z}(n)\label{eq:MatP2}
+      \mathbf{X}(n)=(\mathbf{I}-\mathbf{K}\mathbf{C})\mathbf{Z}(n)\label{eq:MatP2}
     \end{align}
 
     <p>さらに式\eqref{eq:VarMatOfZ2}、\eqref{eq:MatP2}から\(\mathbf{X}(n)\)の漸化式が得られます。</p>
     \begin{align}
-      \mathbf{X}(n)=(\mathbf{I}-\mathbf{K}(n)\mathbf{C})(\mathbf{P}\mathbf{X}(n-1)\mathbf{P}^T+\mathbf{W}) \label{eq:MatP3}
+      \mathbf{X}(n)=(\mathbf{I}-\mathbf{K}\mathbf{C})(\mathbf{P}\mathbf{X}(n-1)\mathbf{P}^T+\mathbf{W}) \label{eq:MatP3}
     \end{align}
 
     <p>式\eqref{eq:MatP2}の両辺に右側から\(\mathbf{C}^T\)を乗じ、式\eqref{eq:KalmanGain1}より\((\mathbf{I}-\mathbf{KC})\mathbf{Z}(n)\mathbf{C}^T=\mathbf{KV}\)を考慮すれば
     次式が得られます。</p>
     \begin{align}
-      \mathbf{K}(n)\mathbf{V}=\mathbf{X}(n)\mathbf{C}^T \label{eq:KV}
+      \mathbf{K}\mathbf{V}=\mathbf{X}(n)\mathbf{C}^T \label{eq:KV}
     \end{align}
 
     <p>すなわち、カルマンゲインは次式となります。</p>
     \begin{align*}
-      \mathbf{K}(n)&=\mathbf{X}(n)\mathbf{C}^T\mathbf{V}^{-1}
+      \mathbf{K}&=\mathbf{X}(n)\mathbf{C}^T\mathbf{V}^{-1}
     \end{align*}
 
     <p><a href="https://aoyamakohbo.github.io/Craftlogy/">->TOP</a></p>
