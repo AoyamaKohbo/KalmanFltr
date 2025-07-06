@@ -36,9 +36,9 @@
     <p>式\eqref{eq:RtnEqn}をブロック線図で表現すると下図になります。</p>     
     <img src="Block.jpg" width=800px>    
     
-    <p>動的システムの状態量\(\mathbf{x}(n)\)は高次微分を含むため直接観測することができません。
-      そこで観測器により推定する必要があります。
-      式\eqref{eq:RtnEqn}の状態観測器(オブザーバー)は次式となります。</p>
+    <p>離散時間状態方程式\eqref{eq:RtnEqn}の状態量\(\mathbf{x}(n)\)は高次微分を含むため直接観測することができません。
+      そこで観測器により推定します。
+      式\eqref{eq:RtnEqn}の状態観測器(オブザーバー)を次式で与えます。</p>
     \begin{align}
       \left.
       \begin{array}{@{\,}rl}
@@ -48,10 +48,10 @@
       \end{array}\label{eq:KalmanFilt}
       \right\}  
     \end{align}
-    <p>\(\hat{\mathbf{x}}\)は状態量\(\mathbf{x}\)の推定量、
-      \(\mathbf{q}\)は状態観測器の状態量であり、状態量\(\mathbf{x}\)の未来予測値となっています。
+    <p>\(\hat{\mathbf{x}}(n)\)は状態量\(\mathbf{x}(n)\)の推定量、
+      \(\mathbf{q}(n)\)は状態観測器の状態量であり、\(\mathbf{q}(n+1)\)は状態量\(\mathbf{x}(n)\)の未来予測値となっています。
     \(\mathbf{e}(n)\)は計測値\(\mathbf{y}(n)\)と状態観測器の出力\(\mathbf{C}\mathbf{q}(n)\)の偏差です。
-    偏差量\(\mathbf{e}(n)\)は行列\(\mathbf{K}\)を補正係数として状態観推定量\(\hat{\mathbf{x}}(n)\)を補正します。
+    偏差量\(\mathbf{e}(n)\)は行列\(\mathbf{K}\)を補正係数として状態量\(\mathbf{q}(n)\)を補正します。
     </p>
 
     <p>状態観測器\eqref{eq:KalmanFilt}をブロック線図で表現すると下図になります。
@@ -60,7 +60,7 @@
 
     <img src="KalmanBlock.jpg" width=800px>
     
-    <p>カルマンフィルターは状態推定誤差\((\mathbf{x}-\hat{\mathbf{x}})\)を最小化する状態観測器であり、
+    <p>カルマンフィルターは状態推定誤差\((\mathbf{x}(n)-\hat{\mathbf{x}(n)})\)を最小化する状態観測器であり、
       状態推定誤差を最小化するために行列\(\mathbf{K}\)(カルマンゲイン)を次式で与えます。</p>
     \begin{align}
       \left.
@@ -85,7 +85,7 @@
       \tilde{\mathbf{x}}(n)=\mathbf{x}(n)-\hat{\mathbf{x}}(n)
     \end{align}
 
-    <p>評価量\(J(n)\)を状態推定誤差\(\tilde{\mathbf{x}}(n)\)の二次評価式(分散)として与えます。</p>
+    <p>評価式\(J(n)\)を状態推定誤差\(\tilde{\mathbf{x}}(n)\)の二次評価式(分散)として与えます。</p>
     \begin{align}
       J(n) = E[\tilde{\mathbf{x}}(n)^T\tilde{\mathbf{x}}(n)] = \frac{1}{n}\sum_{k = 0}^{n}\tilde{\mathbf{x}}(k)^T\tilde{\mathbf{x}}(k) \label{eq:Evalation}
     \end{align}
@@ -103,7 +103,7 @@
       &=~(\mathbf{I}-\mathbf{K}\mathbf{C})\mathbf{z}(n)-\mathbf{K}\mathbf{v}(n)\label{eq:ErrorOfEst}
     \end{align}
 
-    <p>式\eqref{eq:ErrorOfEst}を式\eqref{eq:Evalation}に代入し、\(E[\tilde{\mathbf{z}}(n)\tilde{\mathbf{v}}^T(n)] = 0\)を考慮すると、評価量\(J\)は次式となります。</p>
+    <p>式\eqref{eq:ErrorOfEst}を式\eqref{eq:Evalation}に代入し、\(E[\tilde{\mathbf{z}}(n)\tilde{\mathbf{v}}^T(n)] = 0\)を考慮すると、評価式\eqref{eq:Evalation}は次式となります。</p>
       \begin{align}
       J(n)&=~E[{\mathbf{z}(n)^T(\mathbf{I}-\mathbf{K}\mathbf{C})^T(\mathbf{I}-\mathbf{K}\mathbf{C})\mathbf{z}(n)}]+E[\mathbf{v}(n)^T\mathbf{K}^T\mathbf{K}\mathbf{v}(n)]\nonumber\\
       &=~E[\mathbf{z}(n)^T\mathbf{z}(n)]-E[{\mathbf{z}(n)^T\mathbf{K}\mathbf{C}\mathbf{z}(n)}]-E[{\mathbf{z}(n)^T\mathbf{C}^T\mathbf{K}^T\mathbf{z}(n)}]+E[{\mathbf{z}(n)^T\mathbf{C}^T\mathbf{K}^T\mathbf{K}\mathbf{C}\mathbf{z}(n)}]
@@ -111,7 +111,7 @@
     \end{align}
 
     <p><a href="https://aoyamakohbo.github.io/LstSqtMth2/">最小二乗法</a>と同様に状態推定誤差\(\tilde{\mathbf{x}}\)を
-      最小化するための\(\mathbf{K}\)に対する評価量\(J\)の極値条件(\(\partial J/\partial\mathbf{K}=\mathbf{O}\))は次式となります。</p>
+      最小化するための\(\mathbf{K}\)に対する評価式\eqref{eq:Evalation}の極値条件(\(\partial J/\partial\mathbf{K}=\mathbf{O}\))は次式となります。</p>
     \begin{align}
       \frac{\partial J(n)}{\partial\mathbf{K}}=-2E[{\mathbf{z}(n)^T\mathbf{z}(n)]\mathbf{C}}-2\mathbf{K}\mathbf{C}E[{\mathbf{z}(n)^T\mathbf{z}(n)}]\mathbf{C}+2\mathbf{K}E[\mathbf{v}(n)^T\mathbf{v}(n)]=\mathbf{O} \label{eq:Cond1}
     \end{align}
@@ -127,7 +127,7 @@
       \frac{\partial J(n)}{\partial\mathbf{K}}=-2\mathbf{Z}(n)\mathbf{C}^T-2\mathbf{K}\mathbf{C}\mathbf{Z}(n)\mathbf{C}^T+2\mathbf{K}\mathbf{V}=\mathbf{O}
     \end{align}
 
-    <p>したがって、\(\mathbf{K}\)に対する評価量\(J\)の極値条件(\(\partial J/\partial\mathbf{K}=\mathbf{O}\))は次式となります。</p>
+    <p>したがって、\(\mathbf{K}\)に対する評価式\eqref{eq:Evalation}の極値条件(\(\partial J/\partial\mathbf{K}=\mathbf{O}\))は次式となります。</p>
     \begin{align}
       (\mathbf{I} - \mathbf{K}\mathbf{C})\mathbf{Z}(n)\mathbf{C}^T = \mathbf{K}\mathbf{V} \label{eq:KalmanGain1}
     \end{align}
@@ -184,6 +184,9 @@
     \begin{align*}
       \mathbf{K}&=\mathbf{X}(n)\mathbf{C}^T\mathbf{V}^{-1}
     \end{align*}
+
+    <p><a href="https://aoyamakohbo.github.io/KmlVib1D/">１自由度粘弾性振動系(Kalmanフィルターの適用)</a>では
+      Kalmanフィルターの適用効果を確認します。</p>
 
     <p><a href="https://aoyamakohbo.github.io/Craftlogy/">->TOP</a></p>
 </body>
