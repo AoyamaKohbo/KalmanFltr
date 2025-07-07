@@ -118,11 +118,10 @@
 
     <p>ここで、\(\tilde{\mathbf{x}}(n)\)と\(\mathbf{z}(n)\)の共分散行列を次式で与えます。</p>
     \begin{align}
-      \mathbf{X}(n)&=E[\tilde{\mathbf{x}}(n)\tilde{\mathbf{x}}(n)^T] \label{eq:MatP}\\
-      \mathbf{Z}(n)&=E[\mathbf{z}(n)\mathbf{z}(n)^T] \label{eq:Mat_M}
+      \mathbf{Z}(n)&=E[\mathbf{z}(n)\mathbf{z}(n)^T] \label{eq:Mat_Z}
     \end{align}
 
-    <p>式\eqref{eq:MatP}、\eqref{eq:Mat_M}を用いると、式\eqref{eq:Cond1}は次式になります。</p>
+    <p>式\eqref{eq:MatP}、\eqref{eq:Mat_Z}を用いると、式\eqref{eq:Cond1}は次式になります。</p>
     \begin{align}
       \frac{\partial J(n)}{\partial\mathbf{K}}=-2\mathbf{Z}(n)\mathbf{C}^T-2\mathbf{K}\mathbf{C}\mathbf{Z}(n)\mathbf{C}^T+2\mathbf{K}\mathbf{V}=\mathbf{O}
     \end{align}
