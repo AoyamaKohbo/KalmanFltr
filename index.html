@@ -18,185 +18,127 @@
   </head>
 
   <body>
-    <h3>モデル規範適応制御の数値解析(非線形性の有限要素近似)</h3>
-    <p><a href="https://aoyamakohbo.github.io/AdaptContVib1D/">モデル規範適応制御の数値解析(数値実験)</a>
-      では適応制御対象の駆動効率\(\eta\)が定数の場合について記述しています。
-      しかし、駆動力の発生源として電磁力を使用する場合、
-      電磁石鉄芯と駆動対象(鉄)の間隔(gap)に依存して駆動力が大きく変化します。
-      これは制御対象における駆動効率\(\eta\)が変位に依存して変化することと等価です。
-      そこで、ここでは駆動効率\(\eta\)が変位\(x\)に応じて変化する場合のモデル規範適応制御を確認します。
-      ここでも<a href="https://aoyamakohbo.github.io/AdaptContVib1D_1/">モデル規範適応制御の数値解析(時間微分の差分近似)</a>
-      と同様に変位の時間微分\(\dot x\)を差分近似します。</p>
+    <h3>定常カルマンフィルター(Kalman Filter)</h3>
 
-    <h3>§モデル規範適応制御の定式化</h3>
-    <p>変位\(x\)に応じて駆動効率\(\eta\)が変化する場合(\(\eta(x)\))について<a href="https://aoyamakohbo.github.io/AdaptCont/">超安定論によるモデル規範適応制御</a>
-      を数値解析で確認します。</p>
-
-    \begin{align}
-    \ddot x + a\frac{\eta(x)}{\hat\eta(x)}\dot x + b\frac{\eta(x)}{\hat\eta(x)}(x - u) = 0 \label{eq:SysEqn}
-    \end{align}
-
-    <p> ここに、\(x\)は位置、\(u\)は位置入力、\(\eta(x)(>0)\)は駆動効率、\(\hat\eta\)は駆動効率\(\eta\)の推定値です。</p> 
-
-    <p>目的とする制御性能を規範モデル規範モデルとして次式で与えます。</p>
-      \begin{align}
-        \ddot x_M + a\dot x_M + b(x_M - u)= 0 \label{eq:MdlEqn}
-      \end{align}
-    <p> ここに、\(x_M\)は規範モデルの位置です。係数\(a=50.24\)、\(b=15775\)とします。</p>
-    <p>ここまでは、<a href="https://aoyamakohbo.github.io/AdaptContVib1D_1//">モデル規範適応制御の数値解析(時間微分の差分近似)</a>と同じです。</p>  
-
-    <h3>§基底関数による有限要素近似</h3>
-    <p>駆動効率\(\eta\)が変位\(x\)に応じて変化する場合、制御対象\eqref{eq:SysEqn}は非線形システムになります。
-      そこで、駆動効率\(\eta(x)\)を<a href="https://aoyamakohbo.github.io/BasisFuncApprox/">基底関数による非線形性の有限要素近似</a>
-      をします。</p>
-    <p>まず、変位\(x\)の動作範囲を\(\pm d/2\)とし、長さ\(d\)の領域を\(m\)個の有限要素に分割し、
-      \(m+1\)個の有限要素の節に基底関数\(\phi_i(x)~~(i=0,\cdots, m)\)を配置します。
-      次に、基底関数\(\phi_i(x)\)の重み\(\hat w_i\)を用いて駆動効率\(\eta\)を有限要素近似します。</p>
-      \begin{align}
-        \hat\eta(x) = \sum_{i=0}^m \hat w_i\phi_i(x) \label{eq:Func_eta}
-      \end{align}
-
-    <p>変位\(x \in [p_{i-1},~p_{i}]\)のとき関係する基底関数は\(\phi_{i-1}(x)\)と\(\phi_i(x)\)だけになり(他は\(0\))、
-      有限要素近似\eqref{eq:Func_eta}は次式となります。</p>
-    \begin{align}
-      \hat\eta(x) = \hat w_{i-1}\phi_{i-1}(x) + \hat w_i\phi_i(x)~~~(x \in [p_{i-1},~p_{i}) \label{eq:Func_eta2}
-    \end{align}
-
-    <p>有限要素近似\eqref{eq:Func_eta2}で示すように、変位\(x \in [p_{i-1},~p_{i}]~(m=1,\cdots,m)\)のとき
-      関係する基底関数は\(\phi_{i-1}(x)\)と\(\phi_i(x)\)だけになり、
-      駆動効率\eqref{eq:Func_eta2}の計算は有限要素分割数\(m\)に関係しないことが、
-      <a href="https://aoyamakohbo.github.io/BasisFuncApprox/">基底関数による非線形性の有限要素近似</a>
-      の利点です。</p>
-
-    <h3>§適応制御則</h3>
-    <p>制御対象\eqref{eq:SysEqn}の\(\hat\eta(x)\)の有限要素近似\eqref{eq:Func_eta}を構成する\(\hat w_i\)の適応制御則を次式しとます。</p>
-    
-    <p>適応制御則：</p>
+    <p>動的システムを次式の<a href="https://aoyamakohbo.github.io/StareEq2/">離散時間状態方程式</a>で与えます。</p>
     \begin{align}
       \left.
-        \begin{array}{@{\,}rl}
-        \dot{\hat{w}_i} &=~ -\alpha \displaystyle\frac{v_{FB}\varepsilon}{\hat\eta(x)}\phi_i(x)\\
-        v_{FB} &=~-a \dot x - b (x - u)\\
-        \varepsilon &=~ e + c\dot e,\\
-        e &=~ x_M - x.
-        \end{array}
-      \right\}  \label{eq:AdaptRule}
-    \end{align}
-
-    <p>強誠実条件：</p>
-      \begin{align}
-        c > \frac{1}{a} \label{eq:STR_Cond}
-      \end{align}
-
-<h3>§数値実験</h3>
-  <p>制御対象\eqref{eq:SysEqn}を<a href="https://aoyamakohbo.github.io/EulerMtd/">オイラー法による逐次数値積分</a> により数値計算します。</p>
-  <p>オイラー法の時間刻み\(\varDelta t = 0.0001\)[s]として計算します。\(x_0(n)=x(n)\)として</p>
-
-\begin{align}
-  \left.
-    \begin{array}{@{\,}rl}
-       \ddot x_k(n)&=~ -a\displaystyle\frac{\eta(x)}{\hat\eta(x)} \dot x_k(n) - b\displaystyle\frac{\eta(x)}{\hat\eta(x)}\{x_k(n) - u(n)\},\\
-       \dot x_{k+1}(n)&=~ \dot x_k(n)+\ddot x_k(n)\varDelta t,\\
-       x_{k+1}(n)&=~ x_k(n) + \dot x_k(n)\varDelta t + \displaystyle\frac{1}{2}\ddot x_k(n)\varDelta t^2.
-    \end{array} \label{eq:Euler}
-  \right\}  
-\end{align}
-
-ここでは制御対象\eqref{eq:Euler}の\(\eta(x)\)を次式とします。
-\begin{align}
-\eta(x) = 1.0+0.5x+0.1x^2\label{eq:TrueEta}
-\end{align}
-
-  <p>規範モデル\eqref{eq:MdlEqn}はサンプル時間\(T=0.005\)[s]として、<a href="https://aoyamakohbo.github.io/VscElsVib1D/">離散時間状態方程式</a>
-    で計算します。</p>
-    \begin{align}
-      \left[
-        \begin{array}{@{\,}l}
-          x_M(n+1)\\
-          \dot x_M(n+1)
-        \end{array}
-      \right]
-      =
-      \left[
-        \begin{array}{@{\,}cc}
-          0.9531&0.8241\\
-          -65.26&0.6163
-        \end{array}
-      \right]
-      \left[
-        \begin{array}{@{\,}l}
-          x_M(n)\\
-          \dot x_M(n)
-        \end{array}
-      \right]
-      +
-      \left[
-      \begin{array}{@{\,}c}
-        -0.1759\\
-        65.26
-      \end{array}
-    \right]u(n). \label{eq:StateEq}
-    \end{align} 
-    <p>離散時間状態方程式\eqref{eq:StateEq}を１回実行する間に式\eqref{eq:Euler}を\(T/\varDelta t=50\)回(\(k=0\cdots 49\))実行します。</p>
-    <p>現実の制御対象では出力\(y=x\)以外の状態量は計測できませんので、
-      ここでは変位の時間微分\(\dot x\)を中央差分で近似します。</p>
-    \begin{align}
-    \dot x^\prime(n) = \frac{x(n+1)-x(n-1)}{2T} \label{eq:DiffX}
-    \end{align}
-    
-    <p>中央差分\eqref{eq:DiffX}で\(\dot x^\prime\)の現在値\(\dot x^\prime(n)\)の計算には未来値が必要となってしまいます。
-      そこで、適応制御則\eqref{eq:AdaptRule}には\(x\)、\(\dot x\)、\(u\)には1ステップ過去値\(x(n-1)\)、\(\dot x^{\prime}(n-1)\)、\(u(n-1)\)を採用し、
-      \(\dot{\hat{w}_i}(n)=\{\hat{w}_i(n)-\hat{w}_i(n-1)\}/T\)と近似して適応制御則\eqref{eq:AdaptRule}を次式とします。</p>
-    \begin{align}
-    \left.
       \begin{array}{@{\,}rl}
-      \hat w_i(n)&=~\hat w_i(n-1)-\alpha T\displaystyle\frac{v_{FB}(n-1)\varepsilon(n-1)}{\hat\eta(x)}\phi_i(x)\\
-      v_{FB}(n-1)&=~-a \dot x^\prime(n-1) - b \{x(n-1) - u(n-1)\}\\
-      \varepsilon(n-1) &=~ e(n-1) + c\dot e(n-1)\\
-      e(n-1) &=~ x_M(n-1) - x(n-1)\\
-      \dot e(n-1) &=~ \dot x_M(n-1) - \dot x^{\prime}(n-1)  
-      \end{array} \label{eq:AdaptRuleDgt}
-     \right\}
+      \mathbf{x}(n+1)&=~\mathbf{P}\mathbf{x}(n)+\mathbf{Q}\mathbf{u}(n)+\mathbf{w}(n)\\
+      \mathbf{y}(n)&=~\mathbf{C}\mathbf{x}(n)+\mathbf{v}(n)
+      \end{array}\label{eq:RtnEqn}
+      \right\}
     \end{align}
+    <p>ここに、\(\mathbf{u}\)は入力、\(\mathbf{x}\)は状態量、\(\mathbf{y}\)は出力(計測値)、
+      \(\mathbf{P}\)は遷移行列、\(\mathbf{Q}\)は入力係数行列、\(\mathbf{C}\)は出力係数行列、
+      \(\mathbf{v}\)は出力ノイズ、\(\mathbf{w}\)は入力ノイズです。</p>
 
-    <p>適応制御則\eqref{eq:AdaptRuleDgt}の計算は変位\(x \in [p_{i-1},~p_{i}]~(m=1,\cdots,m)\)のとき
-      関係する基底関数は\(\phi_{i-1}(x)\)と\(\phi_i(x)\)だけになります。
-      したがって、有限要素分割数\(m\)が増加しても計算回数は増加しないことが
-      <a href="https://aoyamakohbo.github.io/BasisFuncApprox/">基底関数による非線形性の有限要素近似</a>
-      の利点です。</p>
-
-    <p>数値実験では式\eqref{eq:Euler}～\eqref{eq:AdaptRuleDgt}を１ステップとします。</p>
-
-    <h3>§入力信号</h3>
-    <p>各有限要素内での適応を促すために、入力\(u(n)\)は<a href="https://aoyamakohbo.github.io/random/">乱数によるランダム信号</a>を加えた正弦振動を次式で与えます。</p>
+    <p>式\eqref{eq:RtnEqn}をブロック線図で表現すると下図になります。</p>     
+    <img src="Block.jpg" width=800px>    
+    
+    <p>離散時間状態方程式\eqref{eq:RtnEqn}の状態量\(\mathbf{x}(n)\)は高次微分を含むため直接観測することができません。
+      そこで観測器により推定します。
+      式\eqref{eq:RtnEqn}の状態観測器(オブザーバー)を次式で与えます。</p>
     \begin{align}
-      u(n)=\sin(2\pi fnT)+\mathrm{rnd}(n).
+      \left.
+      \begin{array}{@{\,}rl}
+        {\mathbf{q}}(n+1)&=~\mathbf{P}\hat{\mathbf{x}}(n)+\mathbf{Q}\mathbf{u}(n)\\
+        \mathbf{e}(n)&=~\mathbf{y}(n)-\mathbf{C}\mathbf{q}(n)\\
+        \hat{\mathbf{x}}(n)&=~{\mathbf{q}}(n)+\mathbf{K}\mathbf{e}(n)    
+      \end{array}\label{eq:KalmanFilt}
+      \right\}  
     \end{align}
-    <p>入力振動数\(f=0.1\)[Hz]、ランダム振動\(\mathrm{rnd}(n)\)の最大値は\(0.1\)、カットオフ周波数を\(20\)[Hz]とします。</p>
-    <p>下図に乱数によるランダム信号を加えた正弦波入力信号のグラフを掲示します。</p>
-
-    <img src="usin_rnd_flt20Hz.jpg" width=600px>
-
-    <h3>§数値実験結果</h3>
-    <p>有限要素近似\eqref{eq:Func_eta2}の\(m=4\)、初期値\(\hat{w}_i = 1~(i=0,1,2,3,4)\)として、
-      \(\eta(x)/\hat\eta(x)\)の挙動を数値実験により観察します。
-    \(\eta(x)\) は\(-1 \le x \le 1\)に対して\(\eta(x)\)は\(0.51\)から\(1.51\)まで３倍程度変化します。
-    下図に\(\eta(x)/\hat \eta(x)\)を示します。
-    適応制御開始から\(\eta(x)/\hat \eta(x)\)は激しく変化しますが、
-    適応制御によって\(\hat \eta(x)\)が\(\eta(x)\)を獲得し、
-    3000ステップあたりから\(\eta(x)/\hat \eta(x)\)は\(1\)へと収束していくことを確認できます。</p>
-      
-    <img src="dηdηhat_r_1_DisInp_0_DistOut_0.jpg" width=600px>
-
-    <p>制御対象\eqref{eq:SysEqn}に設定した\(\eta(x)\)(式\eqref{eq:TrueEta})と適応制御則\eqref{eq:AdaptRuleDgt}で獲得した\(\hat \eta(x)\)(式\eqref{eq:Func_eta2})を下図に示します。
-      \(\eta(x)\)を黒い実線で描画します。\(\hat \eta(x)\)は、\(\hat w(x)\)を赤い点線で示します。
-      適応制御則\eqref{eq:AdaptRuleDgt}によって獲得された\(\hat \eta(x)\)が\(\eta(x)\)を見事に近似し、
-      再現することを確認できます。
+    <p>\(\hat{\mathbf{x}}(n)\)は状態量\(\mathbf{x}(n)\)の推定量、
+      \(\mathbf{q}(n)\)は状態観測器の状態量であり、\(\mathbf{q}(n+1)\)は状態量\(\mathbf{x}(n)\)の未来予測値となっています。
+    \(\mathbf{e}(n)\)は計測値\(\mathbf{y}(n)\)と状態観測器の出力\(\mathbf{C}\mathbf{q}(n)\)の偏差です。
+    偏差量\(\mathbf{e}(n)\)は行列\(\mathbf{K}\)を補正係数として状態量\(\mathbf{q}(n)\)を補正します。
     </p>
 
-    <img src="η&ηhat_r_1.jpg" width=600px>
+    <p>状態観測器\eqref{eq:KalmanFilt}をブロック線図で表現すると下図になります。
+      このブロック線図では制御入力\(\mathbf{u}(n)\)と計測で得られた\(\mathbf{y}(n)\)を入力とし、
+      状態推定値\(\hat{\mathbf{x}}(n)\)を出力としていることが分かります。</p>
 
-   <p><a href="https://aoyamakohbo.github.io/Craftlogy/">->TOP</a></p>
+    <img src="KalmanBlock.jpg" width=800px>
+    
+    <p>カルマンフィルターは状態推定誤差\((\mathbf{x}(n)-\hat{\mathbf{x}(n)})\)を最小化する状態観測器であり、
+      状態推定誤差を最小化するために行列\(\mathbf{K}\)(カルマンゲイン)を次式で与えます。</p>
+    \begin{align}
+      \left.
+      \begin{array}{@{\,}rl}
+      \mathbf{K}&=~\mathbf{X}(n)\mathbf{C}^T\mathbf{V}^{-1}\\
+      \mathbf{X}(n)&=~(\mathbf{I}-\mathbf{K}\mathbf{C})(\mathbf{P}\mathbf{X}(n-1)\mathbf{P}^T+\mathbf{W})\\
+      \mathbf{V}&=~E[\mathbf{v}(n)^T\mathbf{v}(n)]\\
+      \mathbf{W}&=~E[\mathbf{w}(n)^T\mathbf{w}(n)]
+      \end{array}\label{eq:Mat_W}    
+      \right\}  
+    \end{align}
+    
+    <p>\(\mathbf{V}\)、\(\mathbf{W}\)はそれぞれ\(\mathbf{v}(n)\)、\(\mathbf{w}(n)\)の共分散行列です。\(E[*]\)は算術平均であり、\(E[*]\)の中が\(\mathbf{x}(n)\)の場合、次式で与えられます。</p>
+    \begin{align*}
+      E[x(n)] = \frac{1}{n}\sum_{k = 0}^{n}x(k)
+    \end{align*}
+
+    <h3>定常カルマンフィルターの導出</h3>
+    <p>ここでは、行列\(\mathbf{V}\)、\(\mathbf{W}\)が定数行列となる定常状態について導出します。
+      まず、状態量\(\hat{x}\)の状態推定誤差\(\tilde{\mathbf{x}}(n)\)を次式で与えます。</p>
+    \begin{align}
+      \tilde{\mathbf{x}}(n)=\mathbf{x}(n)-\hat{\mathbf{x}}(n)
+    \end{align}
+
+    <p>評価式\(J(n)\)を状態推定誤差\(\tilde{\mathbf{x}}(n)\)の二次評価式(分散)として与えます。</p>
+    \begin{align}
+      J(n) = E[\tilde{\mathbf{x}}(n)^T\tilde{\mathbf{x}}(n)] = \frac{1}{n}\sum_{k = 0}^{n}\tilde{\mathbf{x}}(k)^T\tilde{\mathbf{x}}(k) \label{eq:Evalation}
+    \end{align}
+
+    <p>式\eqref{eq:RtnEqn}の状態量\(\mathbf{x}(n)\)と状態観測器\eqref{eq:KalmanFilt}の状態量\(\mathbf{q}(n)\)の誤差を\(\mathbf{z}(n) = \mathbf{x}(n) - \mathbf{q}(n)\)と定義すると、
+      次式が得られます。</p>
+    \begin{align}
+      \mathbf{z}(n+1)=\mathbf{x}(n+1)-\mathbf{q}(n+1)=\mathbf{P}\tilde{\mathbf{x}}(n)+\mathbf{w}(n) \label{eq:StateEqZ}
+    \end{align}
+
+    <p>状態推定ベクトル\(\hat{\mathbf{x}}(n)\)の誤差ベクトルを次式で与えます。</p>
+    \begin{align}
+      \tilde{\mathbf{x}}(n)&=~\mathbf{x}(n)-\hat{\mathbf{x}}(n)\nonumber\\
+      &=~\mathbf{x}(n)-\mathbf{q}(n)-\mathbf{K}\{\mathbf{C}\mathbf{x}(n)+\mathbf{v}(n)-\mathbf{C}\mathbf{q}(n)\}\nonumber\\
+      &=~(\mathbf{I}-\mathbf{K}\mathbf{C})\mathbf{z}(n)-\mathbf{K}\mathbf{v}(n)\label{eq:ErrorOfEst}
+    \end{align}
+
+    <p>式\eqref{eq:ErrorOfEst}を式\eqref{eq:Evalation}に代入し、\(E[\tilde{\mathbf{z}}(n)\tilde{\mathbf{v}}^T(n)] = 0\)を考慮すると、評価式\eqref{eq:Evalation}は次式となります。</p>
+      \begin{align}
+      J(n)&=~E[{\mathbf{z}(n)^T(\mathbf{I}-\mathbf{K}\mathbf{C})^T(\mathbf{I}-\mathbf{K}\mathbf{C})\mathbf{z}(n)}]+E[\mathbf{v}(n)^T\mathbf{K}^T\mathbf{K}\mathbf{v}(n)]\nonumber\\
+      &=~E[\mathbf{z}(n)^T\mathbf{z}(n)]-E[{\mathbf{z}(n)^T\mathbf{K}\mathbf{C}\mathbf{z}(n)}]-E[{\mathbf{z}(n)^T\mathbf{C}^T\mathbf{K}^T\mathbf{z}(n)}]+E[{\mathbf{z}(n)^T\mathbf{C}^T\mathbf{K}^T\mathbf{K}\mathbf{C}\mathbf{z}(n)}]
+    +E[\mathbf{v}(n)^T\mathbf{K}^T\mathbf{K}\mathbf{v}(n)]
+    \end{align}
+
+    <p><a href="https://aoyamakohbo.github.io/LstSqtMth2/">最小二乗法</a>と同様に状態推定誤差\(\tilde{\mathbf{x}}\)を
+      最小化するための\(\mathbf{K}\)に対する評価式\eqref{eq:Evalation}の極値条件(\(\partial J/\partial\mathbf{K}=\mathbf{O}\))は次式となります。</p>
+    \begin{align}
+      \frac{\partial J(n)}{\partial\mathbf{K}}=-2E[{\mathbf{z}(n)^T\mathbf{z}(n)]\mathbf{C}}-2\mathbf{K}\mathbf{C}E[{\mathbf{z}(n)^T\mathbf{z}(n)}]\mathbf{C}+2\mathbf{K}E[\mathbf{v}(n)^T\mathbf{v}(n)]=\mathbf{O} \label{eq:Cond1}
+    \end{align}
+
+    <p>ここで、\(\mathbf{z}(n)\)の共分散行列を次式で与えます。</p>
+    \begin{align}
+      \mathbf{Z}(n)=\mathbf{Z}(n)^T=E[\mathbf{z}(n)\mathbf{z}(n)^T] \label{eq:Mat_Z}
+    \end{align}
+
+    <p>式\eqref{eq:Mat_Z}を用いると、式\eqref{eq:Cond1}は次式になります。</p>
+    \begin{align}
+      \frac{\partial J(n)}{\partial\mathbf{K}}=-2\mathbf{Z}(n)\mathbf{C}^T-2\mathbf{K}\mathbf{C}\mathbf{Z}(n)\mathbf{C}^T+2\mathbf{K}\mathbf{V}=\mathbf{O}
+    \end{align}
+
+    <p>したがって、\(\mathbf{K}\)に対する評価式\eqref{eq:Evalation}の極値条件(\(\partial J/\partial\mathbf{K}=\mathbf{O}\))は次式となります。</p>
+    \begin{align}
+      (\mathbf{I} - \mathbf{K}\mathbf{C})\mathbf{Z}(n)\mathbf{C}^T = \mathbf{K}\mathbf{V} \label{eq:KalmanGain1}
+    \end{align}
+    
+    <p>式\eqref{eq:KalmanGain1}を変形してKalmanゲインは次式となります。</p>
+    \begin{align}
+      \mathbf{K}={\mathbf Z}(n){\mathbf C}^T\{{\mathbf C}{\mathbf Z}(n){\mathbf C}^T+{\mathbf V}\}^{-1}. \label{eq:KalmanGain}
+    \end{align}
+ 
+    <p><a href="https://aoyamakohbo.github.io/Riccati/">Riccati(リカチ)方程式の解</a>では
+      Kalmanゲインを計算するための\({\mathbf Z}(n)\)を求めます。</p>
+
+    <p><a href="https://aoyamakohbo.github.io/Craftlogy/">->TOP</a></p>
 </body>
-
 </html>
